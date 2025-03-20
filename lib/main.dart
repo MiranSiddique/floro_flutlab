@@ -1,41 +1,97 @@
+// Main application file: main.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'screens/home_screen.dart';
+import 'screens/camera_screen.dart';
+import 'screens/profile_screen.dart';
+import 'screens/explore_screen.dart';
+import 'models/plant.dart';
+import 'services/plant_service.dart';
+import 'utils/theme.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ),
+  );
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // Application name
-      title: 'Flutter Hello World',
-      // Application theme data, you can set the colors for the application as
-      // you want
-      theme: ThemeData(
-        // useMaterial3: false,
-        primarySwatch: Colors.blue,
-      ),
-      // A widget which will be started on application startup
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Floro',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.darkTheme,
+      home: FloroApp(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  final String title;
-  const MyHomePage({super.key, required this.title});  
+class FloroApp extends StatefulWidget {
+  @override
+  _FloroAppState createState() => _FloroAppState();
+}
+
+class _FloroAppState extends State<FloroApp> {
+  int _currentIndex = 0;
+  final List<Widget> _screens = [
+    HomeScreen(),
+    ExploreScreen(),
+    CameraScreen(),
+    ProfileScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // The title text which will be shown on the action bar
-        title: Text(title),
-      ),
-      body: Center(
-        child: Text(
-          'Hello, World!',
+      body: _screens[_currentIndex],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.black,
+          border: Border(
+            top: BorderSide(color: Colors.grey[800]!, width: 0.5),
+          ),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.black,
+          selectedItemColor: Color(0xFF4AE54A),
+          unselectedItemColor: Colors.grey,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: '',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search_outlined),
+              activeIcon: Icon(Icons.search),
+              label: '',
+            ),
+            BottomNavigationBarItem(
+              icon: CircleAvatar(
+                radius: 26,
+                backgroundColor: Color(0xFF4AE54A),
+                child: Icon(Icons.camera_alt, color: Colors.black, size: 24),
+              ),
+              label: '',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              activeIcon: Icon(Icons.person),
+              label: '',
+            ),
+          ],
         ),
       ),
     );
